@@ -17,28 +17,13 @@ class Cabin(Actor):
         while True:
             if self.direction == "up":
                 self.cabin_height += 1
+                self.send(ViewerMessage(height=self.cabin_height))
 
             elif self.direction == "down":
-<<<<<<< HEAD:motor.py
-                self.cabin_height = self.cabin_height - 1
-=======
                 self.cabin_height -= 1
                 self.send(ViewerMessage(height=self.cabin_height))
->>>>>>> 7c90a78315f03a3b3c989bbc25f3e8615cc95c2d:cabin_simulator.py
 
-            self.send(ViewerMessage(height=self.cabin_height))
             sleep(1) # update interval
-
-class Limit_Organizer(Actor):
-    def __init__(self):
-        Actor.__init__(self)
-        self.max_level = 5
-        self.min_level = 0
-
-    def handle_ViewerMessage(self,msg):
-        if msg.height == self.max_level:
-            self.send(MotorMessage(direction="stop"))
-
 
 class Viewer(Actor):
     def handle_ViewerMessage(self,msg):
@@ -59,12 +44,6 @@ class Limiter(Actor):
 
 if __name__ == "__main__":
     ProxyActor()
-<<<<<<< HEAD:motor.py
-    view = Viewer()
-    motor = Motor()
-
-=======
     Viewer()
     Cabin()
->>>>>>> 7c90a78315f03a3b3c989bbc25f3e8615cc95c2d:cabin_simulator.py
     wait_all()
