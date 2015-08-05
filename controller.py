@@ -20,4 +20,6 @@ class Controller(Actor):
 
 if __name__ == "__main__":
     ProxyActor()
-    joinall([Controller()])
+    controller = Controller()
+
+    wait_all()
