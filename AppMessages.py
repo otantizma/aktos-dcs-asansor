@@ -8,3 +8,12 @@ class MotorMessage(Message):
 
 class LimitMessage(Message):
     limit_status = ""
+
+class IoMessage(Message):
+    pin_name = 0
+    pin_number = ""
+    val = ""
+    last_change = False
+
+class UpdateIoMessage(Message):
+    pass

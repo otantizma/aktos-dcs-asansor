@@ -1,4 +1,5 @@
 from aktos_dcs import *
+import math
 
 class Cabin(Actor):
     def __init__(self):
@@ -29,18 +30,26 @@ class Cabin(Actor):
 
             sleep(0.1)  # update interval
 
+    def handle_UpdateIoMessage(self, msg):
+        self.send(IoMessage(pin_name=math.floor(self.cabin_height/300)))  # height of a floor is 300 cm
+
+
 class CabinHeightScreen(Actor):
     def handle_CabinHeightMessage(self, msg):
-        print "elevator is at this meter:", msg.height
+        print "elevator's position", msg.height, "cm"
 
 class FloorSwitch(Actor):
-    def __init__(self, this_floor):
+    def __init__(self, this_floor, switch_position):
         Actor.__init__(self)
         self.this_floor = this_floor
-        self.this_height = 300 * this_floor
+        if switch_position == "upper":
+            self.this_height = 300 * this_floor + 10
+        elif switch_position == "lower":
+            self.this_height = 300 * this_floor - 10
 
     def handle_CabinHeightMessage(self, msg):
         if msg.height == self.this_height:
+            self.send(IoMessage(pin_name=self.this_floor))
             print "Elevator is at this floor:", self.this_floor
 
 
@@ -64,6 +73,7 @@ if __name__ == "__main__":
     Cabin()
     Limiter()
     for i in range(10):
-        FloorSwitch(i)
+        FloorSwitch(i, "upper")
+        FloorSwitch(i, "lower")
 
     wait_all()
