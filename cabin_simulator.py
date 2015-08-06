@@ -4,7 +4,7 @@ class Cabin(Actor):
     def __init__(self):
         Actor.__init__(self)
         self.direction = "stop"
-        self.cabin_height = 0.0
+        self.cabin_height = 0  # cm
         Limiter()
         self.limit_status = "can_move"
 
@@ -20,11 +20,11 @@ class Cabin(Actor):
         while True:
             if self.limit_status == "can_move":
                 if self.direction == "up":
-                    self.cabin_height += 0.1
+                    self.cabin_height += 10
                     self.send(CabinHeightMessage(height=self.cabin_height, direction="up"))
 
                 elif self.direction == "down":
-                    self.cabin_height -= 0.1
+                    self.cabin_height -= 10
                     self.send(CabinHeightMessage(height=self.cabin_height, direction="down"))
 
             sleep(0.1)  # update interval
@@ -37,16 +37,17 @@ class FloorSwitch(Actor):
     def __init__(self):
         Actor.__init__(self)
         self.this_floor = 1
-        self.this_height = 3.0
+        self.this_height = 300
 
     def handle_CabinHeightMessage(self,msg):
         if msg.height == self.this_height:
             print "Elevator is at this floor:",self.this_floor
 
+
 class Limiter(Actor):
     def __init__(self):
         Actor.__init__(self)
-        self.elevator_height = 3  # meters
+        self.elevator_height = 1000  # cm
 
     def handle_CabinHeightMessage(self, msg):
         if (msg.height >= self.elevator_height and msg.direction == "up"
@@ -62,6 +63,6 @@ if __name__ == "__main__":
     CabinHeightScreen()
     Cabin()
     Limiter()
-    # FloorSwitch()
+    FloorSwitch()
 
     wait_all()
