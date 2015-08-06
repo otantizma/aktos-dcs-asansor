@@ -31,7 +31,7 @@ class Cabin(Actor):
             sleep(0.1)  # update interval
 
     def handle_UpdateIoMessage(self, msg):
-        self.send(IoMessage(pin_name=math.floor(self.cabin_height/300)))  # height of a floor is 300 cm
+        self.send(IoMessage(pin_name="floor."+str(math.floor(self.cabin_height/300))))  # height of a floor is 300 cm
 
 
 class CabinHeightScreen(Actor):
@@ -49,21 +49,24 @@ class FloorSwitch(Actor):
 
     def handle_CabinHeightMessage(self, msg):
         if msg.height == self.this_height:
-            self.send(IoMessage(pin_name=self.this_floor))
+            self.send(IoMessage(pin_name="floor."+str(self.this_floor)))
             print "Elevator is at this floor:", self.this_floor
 
 
 class Limiter(Actor):
     def __init__(self):
         Actor.__init__(self)
-        self.elevator_height = 1000  # cm
+        self.elevator_height = 1200  # cm
+        self.limit_status = "can_move"
 
     def handle_CabinHeightMessage(self, msg):
         if (msg.height >= self.elevator_height and msg.direction == "up"
                 or msg.height <= 0 and msg.direction == "down"):
+            self.limit_status="cant_move"
             self.send(LimitMessage(limit_status="cant_move"))
             print "should not exceed physical limits of elevator. Stopping."
-        else:
+        elif self.limit_status == "cant_move":
+            self.limit_status = "can_move"
             self.send(LimitMessage(limit_status="can_move"))
 
 

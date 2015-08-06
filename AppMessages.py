@@ -10,10 +10,13 @@ class LimitMessage(Message):
     limit_status = ""
 
 class IoMessage(Message):
-    pin_name = 0
+    pin_name = ""
     pin_number = ""
     val = ""
     last_change = False
 
 class UpdateIoMessage(Message):
+    pass
+
+class KeypadMessage(Message):
     pass
