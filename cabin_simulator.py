@@ -8,7 +8,7 @@ class Cabin(Actor):
         Limiter()
         self.limit_status = "can_move"
 
-    def handle_LimitMessage(self,msg):
+    def handle_LimitMessage(self, msg):
         self.limit_status = msg.limit_status
 
     def handle_MotorMessage(self, msg):
@@ -34,14 +34,14 @@ class CabinHeightScreen(Actor):
         print "elevator is at this meter:", msg.height
 
 class FloorSwitch(Actor):
-    def __init__(self):
+    def __init__(self, this_floor):
         Actor.__init__(self)
-        self.this_floor = 1
-        self.this_height = 300
+        self.this_floor = this_floor
+        self.this_height = 300 * this_floor
 
-    def handle_CabinHeightMessage(self,msg):
+    def handle_CabinHeightMessage(self, msg):
         if msg.height == self.this_height:
-            print "Elevator is at this floor:",self.this_floor
+            print "Elevator is at this floor:", self.this_floor
 
 
 class Limiter(Actor):
@@ -63,6 +63,7 @@ if __name__ == "__main__":
     CabinHeightScreen()
     Cabin()
     Limiter()
-    FloorSwitch()
+    for i in range(10):
+        FloorSwitch(i)
 
     wait_all()
