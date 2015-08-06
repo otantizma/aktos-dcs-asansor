@@ -31,7 +31,9 @@ class Cabin(Actor):
             sleep(0.1)  # update interval
 
     def handle_UpdateIoMessage(self, msg):
-        self.send(IoMessage(pin_name="floor."+str(math.floor(self.cabin_height/300))))  # height of a floor is 300 cm
+        floor_ratio = float(self.cabin_height)/300.0  # what an ugly code
+        if floor_ratio % 1 < 0.34 or floor_ratio % 1 > 0.96:
+            self.send(IoMessage(pin_name="floor."+str(int(round(floor_ratio)))))  # height of a floor is 300 cm
 
 
 class CabinHeightScreen(Actor):
