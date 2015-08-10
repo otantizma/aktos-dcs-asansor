@@ -21,14 +21,14 @@ class Cabin(Actor):
         while True:
             if self.limit_status == "can_move":
                 if self.direction == "up":
-                    self.cabin_height += 10
+                    self.cabin_height += 1
                     self.send(CabinHeightMessage(height=self.cabin_height, direction="up"))
 
                 elif self.direction == "down":
-                    self.cabin_height -= 10
+                    self.cabin_height -= 1
                     self.send(CabinHeightMessage(height=self.cabin_height, direction="down"))
 
-            sleep(0.1)  # update interval
+            sleep(0.01)  # update interval
 
     def handle_UpdateIoMessage(self, msg):
         floor_ratio = float(self.cabin_height)/300.0  # what an ugly code
@@ -39,7 +39,10 @@ class Cabin(Actor):
 class CabinHeightScreen(Actor):
     def handle_CabinHeightMessage(self, msg):
         print "elevator's position", msg.height, "cm"
-
+        self.send(IoMessage(pin_name="test-slider", val=msg.height))
+# IoMessage
+# pin_name == test-slider
+# value yolluyor
 class FloorSwitch(Actor):
     def __init__(self, this_floor, switch_position):
         Actor.__init__(self)
@@ -73,7 +76,7 @@ class Limiter(Actor):
 
 
 if __name__ == "__main__":
-    ProxyActor()
+    ProxyActor(brokers="192.168.2.110:5012:5013")
     CabinHeightScreen()
     Cabin()
     Limiter()
